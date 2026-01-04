@@ -9,13 +9,18 @@ from werkzeug.utils import secure_filename
 
 @dataclass
 class DataIngestionConfig:
-    root_dir: Path = Path("artifacts/raw_data")
-    upload_folder: Path = Path("static/uploads")
+    # Use /tmp in serverless environments (Vercel), otherwise use local paths
+    root_dir: Path = Path("/tmp/artifacts/raw_data") if os.environ.get('VERCEL') else Path("artifacts/raw_data")
+    upload_folder: Path = Path("/tmp/uploads") if os.environ.get('VERCEL') else Path("static/uploads")
 
 class DataIngestion:
     def __init__(self):
         self.config = DataIngestionConfig()
-        create_directories([self.config.root_dir, self.config.upload_folder])
+        try:
+            create_directories([self.config.root_dir, self.config.upload_folder])
+        except Exception as e:
+            logger.warning(f"Could not create directories: {e}")
+            # Continue anyway, directories might not be needed immediately
 
     def save_uploaded_file(self, file):
         try:

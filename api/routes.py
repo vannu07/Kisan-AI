@@ -1,22 +1,43 @@
 from flask import Blueprint, request, jsonify, current_app
-from src.pipeline.prediction_pipeline import PredictionPipeline
-from src.components.data_ingestion import DataIngestion
-from src.database.mongodb import MongoDBClient
 from src.logger.logging import logger
 import os
 
 api_bp = Blueprint('api', __name__)
 
-# Initialize pipelines
-# Note: In production, you might want to initialize these differently or handle concurrency
-pred_pipeline = PredictionPipeline()
-data_ingestion = DataIngestion()
-mongo_client = MongoDBClient()
+# Lazy initialization to prevent crashes on cold starts
+_pred_pipeline = None
+_data_ingestion = None
+_mongo_client = None
+
+def get_prediction_pipeline():
+    """Lazy load prediction pipeline"""
+    global _pred_pipeline
+    if _pred_pipeline is None:
+        from src.pipeline.prediction_pipeline import PredictionPipeline
+        _pred_pipeline = PredictionPipeline()
+    return _pred_pipeline
+
+def get_data_ingestion():
+    """Lazy load data ingestion"""
+    global _data_ingestion
+    if _data_ingestion is None:
+        from src.components.data_ingestion import DataIngestion
+        _data_ingestion = DataIngestion()
+    return _data_ingestion
+
+def get_mongo_client():
+    """Lazy load MongoDB client"""
+    global _mongo_client
+    if _mongo_client is None:
+        from src.database.mongodb import MongoDBClient
+        _mongo_client = MongoDBClient()
+    return _mongo_client
 
 @api_bp.route('/recommend/crop', methods=['POST'])
 def recommend_crop():
     try:
         data = request.json
+        pred_pipeline = get_prediction_pipeline()
         result = pred_pipeline.recommend_crop(data)
         return jsonify({"success": True, "recommendation": result})
     except Exception as e:
@@ -27,6 +48,7 @@ def recommend_crop():
 def recommend_fertilizer():
     try:
         data = request.json
+        pred_pipeline = get_prediction_pipeline()
         result = pred_pipeline.recommend_fertilizer(data)
         return jsonify({"success": True, "recommendation": result})
     except Exception as e:
@@ -44,9 +66,11 @@ def scan_crop():
             return jsonify({"error": "No selected file"}), 400
 
         # 1. Save File
+        data_ingestion = get_data_ingestion()
         file_path = data_ingestion.save_uploaded_file(file)
         
         # 2. Run Prediction Pipeline
+        pred_pipeline = get_prediction_pipeline()
         result = pred_pipeline.predict_disease(file_path)
         
         return jsonify({"success": True, "analysis": result})
@@ -65,6 +89,7 @@ def chat_advisor():
             return jsonify({"error": "No query provided"}), 400
             
         # Run Chat Pipeline
+        pred_pipeline = get_prediction_pipeline()
         response = pred_pipeline.chat_with_advisor(query)
         
         return jsonify({"success": True, "response": response})
@@ -84,6 +109,7 @@ def get_history():
             pass
 
         query = {"user_id": user_id} if user_id else {}
+        mongo_client = get_mongo_client()
         records = mongo_client.get_records("scan_history", query)
         
         # Convert ObjectId to str for JSON serialization
@@ -106,6 +132,7 @@ def signup():
             return jsonify({"error": "Email and password are required"}), 400
 
         # Check if user exists
+        mongo_client = get_mongo_client()
         existing_user = mongo_client.find_one("users", {"email": email})
         if existing_user:
             return jsonify({"error": "User already exists"}), 409
@@ -131,6 +158,7 @@ def login():
         if not email or not password:
             return jsonify({"error": "Email and password are required"}), 400
 
+        mongo_client = get_mongo_client()
         user = mongo_client.find_one("users", {"email": email, "password": password})
         if not user:
             return jsonify({"error": "Invalid credentials"}), 401
@@ -143,6 +171,8 @@ def login():
 @api_bp.route('/profile', methods=['GET', 'POST'])
 def profile():
     try:
+        mongo_client = get_mongo_client()
+        
         if request.method == 'POST':
             data = request.json
             user_id = data.get('user_id')
