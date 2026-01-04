@@ -1,24 +1,26 @@
 @echo off
+set GIT_PATH="C:\Program Files\Git\cmd\git.exe"
+
 echo Initializing Git...
-git init
+%GIT_PATH% init
 
 echo Adding Remote...
-git remote add origin https://github.com/vannu07/Kisan-AI.git
+%GIT_PATH% remote add origin https://github.com/vannu07/Kisan-AI.git
 
 echo Committing Config Files...
-git add .gitignore requirements.txt README.md vercel.json
-git commit -m "initial config"
+%GIT_PATH% add .gitignore requirements.txt README.md vercel.json
+%GIT_PATH% commit -m "initial config"
 
 echo Committing Backend Code...
-git add app.py src/ api/ notebooks/
-git commit -m "backend logic"
+%GIT_PATH% add app.py src/ api/ notebooks/
+%GIT_PATH% commit -m "backend logic"
 
 echo Committing Frontend Files...
-git add frontend/
-git commit -m "frontend ui"
+%GIT_PATH% add frontend/
+%GIT_PATH% commit -m "frontend ui"
 
 echo Pushing to GitHub...
-git push -u origin main
+%GIT_PATH% push -u origin main
 
 echo Done!
 pause
