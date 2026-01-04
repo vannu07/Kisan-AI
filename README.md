@@ -115,6 +115,41 @@ Open `http://localhost:5000` in your browser.
 
 ---
 
+## 🌐 Deployment
+
+### Deploy to Vercel (Recommended)
+
+The application is optimized for serverless deployment on Vercel. Follow these steps:
+
+#### Quick Deploy
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel --prod
+```
+
+#### Configure Environment Variables
+Set these in your Vercel project settings:
+- `GEMINI_API_KEY` - Your Google Gemini API key (Required)
+- `MONGODB_URL` - MongoDB Atlas connection string (Optional, falls back to local JSON)
+
+#### Important Notes
+- ✅ Automatic deployment from GitHub on every push
+- ✅ Lazy-loaded components prevent cold start crashes
+- ✅ Serverless functions with 10s timeout (Hobby) / 60s (Pro)
+- ✅ Health check endpoint: `/health`
+
+For detailed deployment instructions, see [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md)
+
+### Alternative Deployments
+- **Heroku**: Use `Procfile` with gunicorn
+- **AWS Lambda**: Use Zappa or similar framework
+- **Docker**: Build and deploy containerized app
+
+---
+
 ## 🧪 API Endpoints
 
 | Method | Endpoint | Description |
