@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Profile - KisanAI Live</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/utils.js"></script>
+</head>
+<body class="login-body">
+    <div style="position: absolute; top: 0; width: 100%; background-color: rgba(46, 125, 50, 0.9); color: white; padding: 10px; text-align: center; font-size: 0.9rem; z-index: 100;">
+        <i class="fas fa-shield-alt"></i> <strong>Secure Connection:</strong> Your data is end-to-end encrypted.
+    </div>
+    <div class="login-card" style="max-width: 500px;">
+        <div class="login-header">
+            <div class="logo" style="justify-content: center; margin-bottom: 20px;">
+                <i class="fas fa-leaf"></i> KisanAI <span>Live</span>
+            </div>
+            <h2>Complete Your Profile</h2>
+            <p style="color: #666; font-size: 0.9rem;">Tell us about your farm to get personalized advice.</p>
+        </div>
+        
+        <form id="profile-form">
+            <div class="form-group">
+                <label for="location">Farm Location</label>
+                <input type="text" id="location" placeholder="e.g. Ludhiana, Punjab" required>
+            </div>
+            <div class="form-group">
+                <label for="farm_size">Farm Size</label>
+                <input type="text" id="farm_size" placeholder="e.g. 10 Acres" required>
+            </div>
+            <div class="form-group">
+                <label for="crops">Primary Crops (Comma separated)</label>
+                <input type="text" id="crops" placeholder="e.g. Wheat, Rice, Tomato" required>
+            </div>
+            
+            <button type="submit" class="login-btn">
+                <i class="fas fa-save"></i> Save Profile
+            </button>
+        </form>
+        
+        <div style="margin-top: 30px; font-size: 0.8rem; color: #999;">
+            &copy; 2026 KisanAI Live.
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        const userId = localStorage.getItem('user_id');
+        if (!userId) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('profile-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const location = document.getElementById('location').value;
+            const farm_size = document.getElementById('farm_size').value;
+            const crops = document.getElementById('crops').value;
+            const name = localStorage.getItem('user_name'); // Get name from sign up step
+
+            try {
+                const response = await fetch('/api/profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        user_id: userId,
+                        location, 
+                        farm_size, 
+                        crops,
+                        name
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showNotification('Profile saved! Redirecting to dashboard...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                } else {
+                    showNotification('Failed to save profile: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('An error occurred while saving profile.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

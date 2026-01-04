@@ -1,0 +1,13 @@
+artifacts_root: artifacts
+
+data_ingestion:
+  root_dir: artifacts/raw_data
+  source_URL: local_upload
+  local_data_file: artifacts/raw_data/uploaded_image.jpg
+
+model_ingestion:
+  root_dir: artifacts/model
+  model_name: gemini-pro-vision
+
+prediction:
+  image_path: artifacts/raw_data/uploaded_image.jpg

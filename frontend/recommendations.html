@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations - KisanAI Live</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/translations.js"></script>
+    <script src="js/utils.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <button class="mobile-nav-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-leaf"></i> KisanAI <span>Live</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> <span data-i18n="dashboard">Dashboard</span></a></li>
+                <li><a href="scan.html"><i class="fas fa-camera"></i> <span data-i18n="scan_crop">Scan Crop</span></a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> <span data-i18n="ai_advisor">AI Advisor</span></a></li>
+                <li><a href="recommendations.html" class="active"><i class="fas fa-seedling"></i> <span data-i18n="recommendations">Recommendations</span></a></li>
+                <li><a href="history.html"><i class="fas fa-history"></i> <span data-i18n="history">History</span></a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> <span data-i18n="profile">Profile</span></a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1 style="margin-bottom: 20px;" data-i18n="recommendations">Recommendations</h1>
+            
+            <div class="tabs" style="display: flex; gap: 20px; margin-bottom: 20px;">
+                <button class="btn btn-outline active" onclick="showTab('crop')" id="tab-crop" data-i18n="crop_recommendation">Crop Recommendation</button>
+                <button class="btn btn-outline" onclick="showTab('fertilizer')" id="tab-fertilizer" data-i18n="fertilizer_recommendation">Fertilizer Recommendation</button>
+            </div>
+
+            <!-- Crop Form -->
+            <div id="crop-section" class="form-section">
+                <div class="profile-card">
+                    <h3 data-i18n="crop_recommendation">Crop Recommendation</h3>
+                    <form id="crop-form" onsubmit="getRecommendation(event, 'crop')">
+                        <div class="form-group">
+                            <label data-i18n="nitrogen">Nitrogen (N)</label>
+                            <input type="number" name="N" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="phosphorous">Phosphorous (P)</label>
+                            <input type="number" name="P" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="potassium">Potassium (K)</label>
+                            <input type="number" name="K" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="temperature">Temperature (°C)</label>
+                            <input type="number" name="temperature" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="humidity">Humidity (%)</label>
+                            <input type="number" name="humidity" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="ph">pH Level</label>
+                            <input type="number" step="0.1" name="ph" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="rainfall">Rainfall (mm)</label>
+                            <input type="number" name="rainfall" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg-rec" data-i18n="get_recommendation">
+                            <i class="fas fa-search"></i> Get Recommendation
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Fertilizer Form -->
+            <div id="fertilizer-section" class="form-section" style="display: none;">
+                <div class="profile-card">
+                    <h3 data-i18n="fertilizer_recommendation">Fertilizer Recommendation</h3>
+                    <form id="fertilizer-form" onsubmit="getRecommendation(event, 'fertilizer')">
+                        <div class="form-group">
+                            <label data-i18n="soil_type">Soil Type</label>
+                            <select name="soil_type" class="form-control" required>
+                                <option value="Sandy">Sandy</option>
+                                <option value="Loamy">Loamy</option>
+                                <option value="Clay">Clay</option>
+                                <option value="Black">Black</option>
+                                <option value="Red">Red</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="crop">Crop</label>
+                            <select name="crop" class="form-control" required>
+                                <option value="Rice">Rice</option>
+                                <option value="Maize">Maize</option>
+                                <option value="Chickpea">Chickpea</option>
+                                <option value="Kidneybeans">Kidneybeans</option>
+                                <option value="Pigeonpeas">Pigeonpeas</option>
+                                <option value="Mothbeans">Mothbeans</option>
+                                <option value="Mungbean">Mungbean</option>
+                                <option value="Blackgram">Blackgram</option>
+                                <option value="Lentil">Lentil</option>
+                                <option value="Pomegranate">Pomegranate</option>
+                                <option value="Banana">Banana</option>
+                                <option value="Mango">Mango</option>
+                                <option value="Grapes">Grapes</option>
+                                <option value="Watermelon">Watermelon</option>
+                                <option value="Muskmelon">Muskmelon</option>
+                                <option value="Apple">Apple</option>
+                                <option value="Orange">Orange</option>
+                                <option value="Papaya">Papaya</option>
+                                <option value="Coconut">Coconut</option>
+                                <option value="Cotton">Cotton</option>
+                                <option value="Jute">Jute</option>
+                                <option value="Coffee">Coffee</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="nitrogen">Nitrogen (N)</label>
+                            <input type="number" name="N" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="phosphorous">Phosphorous (P)</label>
+                            <input type="number" name="P" required>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="potassium">Potassium (K)</label>
+                            <input type="number" name="K" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg-rec" data-i18n="get_recommendation">
+                            <i class="fas fa-flask"></i> Get Recommendation
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div id="result-area" style="margin-top: 30px; display: none;">
+                <div class="profile-card" style="border-left: 5px solid var(--accent-color);">
+                    <h3 data-i18n="analysis_result">Recommendation Result</h3>
+                    <div id="result-content" style="white-space: pre-wrap;"></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            document.getElementById('crop-section').style.display = tab === 'crop' ? 'block' : 'none';
+            document.getElementById('fertilizer-section').style.display = tab === 'fertilizer' ? 'block' : 'none';
+            document.getElementById('tab-crop').classList.toggle('active', tab === 'crop');
+            document.getElementById('tab-fertilizer').classList.toggle('active', tab === 'fertilizer');
+            document.getElementById('result-area').style.display = 'none';
+        }
+
+        async function getRecommendation(e, type) {
+            e.preventDefault();
+            const form = document.getElementById(`${type}-form`);
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            const btn = form.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = "Processing...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`/api/recommend/${type}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('result-area').style.display = 'block';
+                    // Check if it's JSON string or plain text
+                    let content = result.recommendation;
+                    try {
+                        // If it's a JSON string, format it nicely
+                         // Remove ```json and ``` if present
+                        content = content.replace(/```json/g, '').replace(/```/g, '');
+                        const jsonObj = JSON.parse(content);
+                        document.getElementById('result-content').innerHTML = `<pre>${JSON.stringify(jsonObj, null, 2)}</pre>`;
+                    } catch (e) {
+                        document.getElementById('result-content').textContent = content;
+                    }
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred.');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

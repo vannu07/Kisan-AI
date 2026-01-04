@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Advisor - KisanAI Live</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/translations.js"></script>
+    <script src="js/utils.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <button class="mobile-nav-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-leaf"></i> KisanAI <span>Live</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> <span data-i18n="dashboard">Dashboard</span></a></li>
+                <li><a href="scan.html"><i class="fas fa-camera"></i> <span data-i18n="scan_crop">Scan Crop</span></a></li>
+                <li><a href="chat.html" class="active"><i class="fas fa-comments"></i> <span data-i18n="ai_advisor">AI Advisor</span></a></li>
+                <li><a href="recommendations.html"><i class="fas fa-seedling"></i> <span data-i18n="recommendations">Recommendations</span></a></li>
+                <li><a href="history.html"><i class="fas fa-history"></i> <span data-i18n="history">History</span></a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> <span data-i18n="profile">Profile</span></a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div style="position: relative;">
+                        <!-- Using generic AI icon instead of Gemini logo for rebranding -->
+                        <div style="width: 40px; height: 40px; background: #fff; border-radius: 50%; padding: 5px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-robot" style="color: var(--primary-color); font-size: 1.2rem;"></i>
+                        </div>
+                        <div style="position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: #4DB33D; border-radius: 50%; border: 2px solid #fff;"></div>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0;" data-i18n="ask_advisor">KisanAI Advisor</h3>
+                        <p style="margin: 0; font-size: 0.8rem; color: #888;" data-i18n="powered_by">Online • Powered by KisanAI</p>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-box">
+                    <div class="message ai">
+                        <p>Namaste! I am your KisanAI farming assistant. How can I help you today?</p>
+                        <span style="font-size: 0.7rem; color: #999; display: block; margin-top: 5px;">Just now</span>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <button class="btn btn-outline" style="border-radius: 50%; width: 45px; height: 45px; padding: 0;" onclick="startDictation()" title="Voice Input">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <input type="text" class="chat-input" id="user-input" placeholder="Ask KisanAI about your crop..." data-i18n-placeholder="chat_placeholder">
+                    <button class="send-btn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div id="listening-indicator" style="display: none; text-align: center; color: var(--accent-color); font-size: 0.8rem; margin-top: 5px;">
+                    <i class="fas fa-circle-notch fa-spin"></i> <span data-i18n="listening">Listening...</span>
+                </div>
+            </div>
+            <footer style="text-align: center; padding: 20px; margin-top: 30px; color: #666; font-size: 0.9rem;">
+                &copy; 2026 KisanAI Live.
+            </footer>
+        </main>
+    </div>
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: message })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    addMessage(data.response, 'ai');
+                } else {
+                    addMessage("Sorry, I encountered an error.", 'ai');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage("Sorry, I am unable to connect right now.", 'ai');
+            }
+        }
+
+        function addMessage(text, sender) {
+            const chatBox = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className = `message ${sender}`;
+            
+            div.innerHTML = `
+                <p>${text}</p>
+                <span style="font-size: 0.7rem; color: ${sender === 'user' ? 'rgba(255,255,255,0.8)' : '#999'}; display: block; margin-top: 5px; ${sender === 'user' ? 'text-align: right;' : ''}">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+            `;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Voice Input Logic
+        function startDictation() {
+            if (window.hasOwnProperty('webkitSpeechRecognition')) {
+                const recognition = new webkitSpeechRecognition();
+                const indicator = document.getElementById('listening-indicator');
+                
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                // Check language
+                const currentLang = localStorage.getItem('language') || 'en';
+                recognition.lang = currentLang === 'hi' ? "hi-IN" : "en-US";
+                
+                recognition.start();
+                indicator.style.display = "block";
+
+                recognition.onresult = function(e) {
+                    document.getElementById('user-input').value = e.results[0][0].transcript;
+                    recognition.stop();
+                    indicator.style.display = "none";
+                    // Automatically send? Maybe let user review first.
+                };
+
+                recognition.onerror = function(e) {
+                    recognition.stop();
+                    indicator.style.display = "none";
+                    console.error("Speech recognition error", e);
+                };
+                
+                recognition.onend = function() {
+                    indicator.style.display = "none";
+                };
+            } else {
+                alert("Voice input is not supported in this browser. Try Chrome.");
+            }
+        }
+
+        // Allow Enter key to send
+        document.getElementById('user-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

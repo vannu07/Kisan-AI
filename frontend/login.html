@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - KisanAI Live</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="login-body">
+    <div style="position: absolute; top: 0; width: 100%; background-color: rgba(46, 125, 50, 0.9); color: white; padding: 10px; text-align: center; font-size: 0.9rem; z-index: 100;">
+        <i class="fas fa-shield-alt"></i> <strong>Secure Connection:</strong> Your data is end-to-end encrypted.
+    </div>
+    <div class="login-card">
+        <div class="login-header">
+            <div class="logo" style="justify-content: center; margin-bottom: 20px;">
+                <i class="fas fa-leaf"></i> KisanAI <span>Live</span>
+            </div>
+            <h2>Welcome Farmer</h2>
+            <div class="auth-badge">
+                <i class="fas fa-lock"></i> Secure Login powered by Auth0
+            </div>
+        </div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="farmer@kisanai.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> Login Securely
+            </button>
+        </form>
+
+        <div style="margin-top: 20px; font-size: 0.9rem; color: #666;">
+            <p>Don't have an account? <a href="signup.html" style="color: var(--primary-color); font-weight: 600;">Sign up</a></p>
+        </div>
+        
+        <div style="margin-top: 30px; font-size: 0.8rem; color: #999;">
+            Protected by Auth0 Universal Login
+            <br><br>
+            &copy; 2026 KisanAI Live. Created by Varnit Kumar.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('user_id', data.user_id);
+                    localStorage.setItem('user_name', data.name);
+                    
+                    // Check if profile exists (optional, or just go to dashboard)
+                    // For now, go to dashboard
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert('Login failed: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during login.');
+            }
+        });
+    </script>
+</body>
+</html>

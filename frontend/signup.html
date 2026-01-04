@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - KisanAI Live</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="login-body">
+    <div style="position: absolute; top: 0; width: 100%; background-color: rgba(46, 125, 50, 0.9); color: white; padding: 10px; text-align: center; font-size: 0.9rem; z-index: 100;">
+        <i class="fas fa-shield-alt"></i> <strong>Secure Connection:</strong> Your data is end-to-end encrypted.
+    </div>
+    <div class="login-card">
+        <div class="login-header">
+            <div class="logo" style="justify-content: center; margin-bottom: 20px;">
+                <i class="fas fa-leaf"></i> KisanAI <span>Live</span>
+            </div>
+            <h2>Create Account</h2>
+            <div class="auth-badge">
+                <i class="fas fa-user-plus"></i> Join the Farmer Community
+            </div>
+        </div>
+        
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="Rajesh Kumar" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="farmer@kisanai.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="login-btn">
+                <i class="fas fa-user-check"></i> Sign Up
+            </button>
+        </form>
+
+        <div style="margin-top: 20px; font-size: 0.9rem; color: #666;">
+            <p>Already have an account? <a href="login.html" style="color: var(--primary-color); font-weight: 600;">Login</a></p>
+        </div>
+        
+        <div style="margin-top: 30px; font-size: 0.8rem; color: #999;">
+            &copy; 2026 KisanAI Live.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Account created successfully! Please complete your profile.');
+                    // Store user_id temporarily or login directly
+                    localStorage.setItem('user_id', data.user_id);
+                    localStorage.setItem('user_name', name);
+                    window.location.href = 'create_profile.html';
+                } else {
+                    alert('Sign up failed: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during sign up.');
+            }
+        });
+    </script>
+</body>
+</html>

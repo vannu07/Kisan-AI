@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Crop - KisanAI Live</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/translations.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <button class="mobile-nav-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-leaf"></i> KisanAI <span>Live</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> <span data-i18n="dashboard">Dashboard</span></a></li>
+                <li><a href="scan.html" class="active"><i class="fas fa-camera"></i> <span data-i18n="scan_crop">Scan Crop</span></a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> <span data-i18n="ai_advisor">AI Advisor</span></a></li>
+                <li><a href="recommendations.html"><i class="fas fa-seedling"></i> <span data-i18n="recommendations">Recommendations</span></a></li>
+                <li><a href="history.html"><i class="fas fa-history"></i> <span data-i18n="history">History</span></a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> <span data-i18n="profile">Profile</span></a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" style="background-image: url('images/crop_background.jpg'); background-size: cover; background-attachment: fixed; position: relative;">
+            <!-- Overlay -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 0;"></div>
+            
+            <div class="scan-wrapper" style="position: relative; z-index: 1;">
+                <div class="text-center mb-40">
+                    <h1 style="color: var(--primary-color);" data-i18n="scan_crop">KisanAI Vision Analysis</h1>
+                    <p data-i18n="scan_desc">Upload a photo of your crop to detect diseases instantly.</p>
+                </div>
+
+                <div class="upload-area" id="upload-area">
+                    <input type="file" id="file-input" style="display: none;" accept="image/*">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 4rem; color: #ccc; margin-bottom: 20px;"></i>
+                    <h3 id="upload-text" data-i18n="upload_text">Drag & Drop or Click to Upload</h3>
+                    <p style="color: #888; margin-bottom: 20px;">Supports JPG, PNG (Max 5MB)</p>
+                    <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">
+                        <i class="fas fa-image"></i> <span data-i18n="select_image">Select Image</span>
+                    </button>
+                    <p style="margin-top: 15px; font-size: 0.8rem; color: var(--primary-color);">
+                        <i class="fas fa-bolt"></i> <span data-i18n="powered_by">Analysis powered by KisanAI</span>
+                    </p>
+                </div>
+
+                <div class="text-center mb-40">
+                    <button class="btn btn-accent btn-lg" style="width: 200px;" onclick="analyzeImage()" data-i18n="analyze_now">
+                        Analyze Now
+                    </button>
+                </div>
+
+                <!-- Results Simulation -->
+                <div class="results-section" id="results-section" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">
+                        <h2 data-i18n="analysis_result">Analysis Result</h2>
+                        <button class="btn btn-outline" onclick="exportPDF()" style="font-size: 0.9rem;">
+                            <i class="fas fa-file-pdf"></i> <span data-i18n="export_pdf">Export PDF</span>
+                        </button>
+                    </div>
+                    
+                    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <img id="result-img" src="" alt="Analyzed Leaf" style="border-radius: 8px; width: 100%;">
+                        </div>
+                        <div style="flex: 2; min-width: 300px;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                                <h3 id="result-title">Detected: ...</h3>
+                                <span class="disease-badge" id="result-severity">Severity</span>
+                            </div>
+                            
+                            <p style="margin-bottom: 20px;"><strong>Confidence:</strong> <span id="result-confidence">...</span></p>
+
+                            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                                <h4 style="color: var(--primary-color); margin-bottom: 5px;">Analysis</h4>
+                                <p id="result-analysis">...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gemini-powered">
+                        <span>Analysis by</span>
+                        <span>KisanAI Vision</span>
+                    </div>
+                </div>
+            </div>
+            <footer style="text-align: center; padding: 20px; margin-top: 30px; color: #666; font-size: 0.9rem; position: relative; z-index: 1;">
+                &copy; 2026 KisanAI Live.
+            </footer>
+        </main>
+    </div>
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const uploadArea = document.getElementById('upload-area');
+        let selectedFile = null;
+
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                selectedFile = e.target.files[0];
+                document.getElementById('upload-text').textContent = "Selected: " + selectedFile.name;
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Could show preview in upload area if needed
+                }
+                reader.readAsDataURL(selectedFile);
+            }
+        });
+
+        async function analyzeImage() {
+            if (!selectedFile) {
+                alert("Please select an image first.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            
+            // Add user_id if needed by backend to associate history
+            const userId = localStorage.getItem('user_id');
+            if (userId) {
+                formData.append('user_id', userId);
+            }
+
+            try {
+                // Show loading
+                document.querySelector('.btn-accent').textContent = "Analyzing...";
+                
+                const response = await fetch('/api/scan', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('results-section').style.display = 'block';
+                    document.getElementById('result-img').src = URL.createObjectURL(selectedFile);
+                    
+                    // Parse result.analysis if it's a string, or display directly
+                    // Assuming data.analysis is a text description from Gemini
+                    document.getElementById('result-title').textContent = "Analysis Complete";
+                    document.getElementById('result-analysis').innerHTML = data.analysis.replace(/\n/g, '<br>');
+                    document.getElementById('result-confidence').textContent = "High"; // Mock if not provided
+                    
+                } else {
+                    showNotification("Analysis failed: " + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification("An error occurred during analysis.", 'error');
+            } finally {
+                document.querySelector('.btn-accent').textContent = "Analyze Now";
+            }
+        }
+
+        async function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add Header
+            doc.setFontSize(22);
+            doc.setTextColor(77, 179, 61); // Primary Color
+            doc.text("KisanAI Analysis Report", 20, 20);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text("Generated on: " + new Date().toLocaleDateString(), 20, 30);
+            
+            // Add Image
+            const imgElement = document.getElementById('result-img');
+            if (imgElement.src) {
+                try {
+                     // Create canvas to get base64
+                    const canvas = document.createElement("canvas");
+                    canvas.width = imgElement.naturalWidth;
+                    canvas.height = imgElement.naturalHeight;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(imgElement, 0, 0);
+                    const imgData = canvas.toDataURL("image/jpeg");
+                    doc.addImage(imgData, 'JPEG', 20, 40, 80, 60); // x, y, w, h
+                } catch(e) {
+                    console.warn("Could not add image to PDF", e);
+                }
+            }
+            
+            // Add Analysis Text
+            doc.setFontSize(14);
+            doc.text("Analysis Results:", 20, 110);
+            doc.setFontSize(10);
+            
+            const analysisText = document.getElementById('result-analysis').innerText;
+            const splitText = doc.splitTextToSize(analysisText, 170);
+            doc.text(splitText, 20, 120);
+            
+            // Footer
+            doc.setFontSize(8);
+            doc.setTextColor(100);
+            doc.text("Powered by KisanAI - Your Smart Farming Assistant", 20, 280);
+            
+            doc.save("KisanAI_Report.pdf");
+        }
+    </script>
+</body>
+</html>

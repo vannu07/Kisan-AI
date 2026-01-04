@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - KisanAI Live</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/translations.js"></script>
+    <script src="js/utils.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <button class="mobile-nav-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-leaf"></i> KisanAI <span>Live</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html" data-i18n="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="scan.html" data-i18n="scan_crop"><i class="fas fa-camera"></i> Scan Crop</a></li>
+                <li><a href="recommendations.html" data-i18n="recommendations"><i class="fas fa-seedling"></i> Recommendations</a></li>
+                <li><a href="chat.html" data-i18n="ai_advisor"><i class="fas fa-comments"></i> AI Advisor</a></li>
+                <li><a href="history.html" data-i18n="history"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="profile.html" class="active" data-i18n="profile"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="profile-header">
+                <img src="images/core.jpg" alt="Farmer Profile" class="profile-img">
+                <h2 id="profile-name">Loading...</h2>
+                <p style="color: #666;" id="profile-subtitle">Loading...</p>
+                <div class="badge auth0" style="display: inline-flex; margin-top: 15px;">
+                    <i class="fas fa-shield-alt"></i> <span data-i18n="account_secured">Account Secured</span>
+                </div>
+            </div>
+
+            <div class="profile-details">
+                <div class="detail-card">
+                    <i class="fas fa-map-marker-alt" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 10px;"></i>
+                    <h3 data-i18n="location">Location</h3>
+                    <p id="profile-location">Loading...</p>
+                </div>
+                <div class="detail-card">
+                    <i class="fas fa-seedling" style="font-size: 2rem; color: var(--secondary-color); margin-bottom: 10px;"></i>
+                    <h3 data-i18n="primary_crops">Primary Crops</h3>
+                    <p id="profile-crops">Loading...</p>
+                </div>
+                <div class="detail-card">
+                    <i class="fas fa-tractor" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 10px;"></i>
+                    <h3 data-i18n="farm_size">Farm Size</h3>
+                    <p id="profile-size">Loading...</p>
+                </div>
+            </div>
+
+            <div class="section-title" style="text-align: left; margin-top: 40px; margin-bottom: 20px;">
+                <h2 data-i18n="account_settings">Account Settings</h2>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: var(--card-shadow);">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee;">
+                    <div>
+                        <h4 style="margin-bottom: 5px;" data-i18n="email_notifications">Email Notifications</h4>
+                        <p style="font-size: 0.9rem; color: #888;" data-i18n="email_desc">Receive weekly crop health reports</p>
+                    </div>
+                    <div style="color: var(--primary-color);"><i class="fas fa-toggle-on fa-2x"></i></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0;">
+                    <div>
+                        <h4 style="margin-bottom: 5px;" data-i18n="language">Language</h4>
+                        <p style="font-size: 0.9rem; color: #888;" data-i18n="lang_desc">Change app language (Hindi/Punjabi/English)</p>
+                    </div>
+                    <div style="font-weight: 600; color: #555;">English <i class="fas fa-chevron-right"></i></div>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; text-align: center;">
+                <a href="#" onclick="logout()" class="btn" style="background-color: #ffebee; color: #c62828; border: 1px solid #c62828;">
+                    <i class="fas fa-sign-out-alt"></i> <span data-i18n="logout">Log Out</span>
+                </a>
+            </div>
+            <footer style="text-align: center; padding: 20px; margin-top: 30px; color: #666; font-size: 0.9rem;">
+                &copy; 2026 KisanAI Live. Created by Varnit Kumar.
+            </footer>
+        </main>
+    </div>
+
+    <!-- MFA Modal -->
+    <div id="mfa-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 10px;">Enter Verification Code</h3>
+            <p style="color: #666; margin-bottom: 20px;" id="mfa-message">We sent a code to your email.</p>
+            
+            <div class="otp-inputs">
+                <input type="text" class="otp-input" maxlength="1" onkeyup="moveNext(this, 1)">
+                <input type="text" class="otp-input" maxlength="1" onkeyup="moveNext(this, 2)">
+                <input type="text" class="otp-input" maxlength="1" onkeyup="moveNext(this, 3)">
+                <input type="text" class="otp-input" maxlength="1" onkeyup="moveNext(this, 4)">
+            </div>
+            
+            <button class="btn btn-primary" onclick="verifyOTP()" style="width: 100%;">Verify</button>
+            <button class="btn btn-outline" onclick="closeModal()" style="width: 100%; margin-top: 10px; border: none;">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        let currentVerificationType = '';
+
+        function initiateMFA(type) {
+            const inputId = type === 'email' ? 'verify-email' : 'verify-phone';
+            const value = document.getElementById(inputId).value;
+            
+            if (!value) {
+                showNotification(`Please enter a valid ${type}`, 'error');
+                return;
+            }
+
+            currentVerificationType = type;
+            // Simulate API call
+            showNotification(`Sending verification code to ${value}...`, 'info');
+            
+            setTimeout(() => {
+                document.getElementById('mfa-message').textContent = `We sent a code to ${value}`;
+                document.getElementById('mfa-modal').classList.add('active');
+                // Auto focus first input
+                document.querySelector('.otp-input').focus();
+            }, 1500);
+        }
+
+        function closeModal() {
+            document.getElementById('mfa-modal').classList.remove('active');
+        }
+
+        function moveNext(input, index) {
+            if (input.value.length >= 1) {
+                const next = document.querySelectorAll('.otp-input')[index];
+                if (next) next.focus();
+            }
+        }
+
+        function verifyOTP() {
+            // Collect OTP
+            let otp = '';
+            document.querySelectorAll('.otp-input').forEach(input => otp += input.value);
+            
+            if (otp.length === 4) {
+                // Mock verification
+                closeModal();
+                showNotification(`${currentVerificationType === 'email' ? 'Email' : 'Phone'} verified successfully!`, 'success');
+                
+                // Disable input and button to show verified state
+                const inputId = currentVerificationType === 'email' ? 'verify-email' : 'verify-phone';
+                const input = document.getElementById(inputId);
+                input.disabled = true;
+                input.style.borderColor = 'green';
+                input.style.backgroundColor = '#e8f5e9';
+                
+                const btn = input.nextElementSibling;
+                btn.textContent = 'Verified';
+                btn.className = 'btn btn-outline';
+                btn.style.color = 'green';
+                btn.style.borderColor = 'green';
+                btn.disabled = true;
+
+                // Clear inputs for next time
+                document.querySelectorAll('.otp-input').forEach(i => i.value = '');
+            } else {
+                showNotification('Invalid code. Please try again.', 'error');
+            }
+        }
+
+        async function loadProfile() {
+            const userId = localStorage.getItem('user_id');
+            if (!userId) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/profile?user_id=${userId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('profile-name').textContent = data.name || "Farmer";
+                    document.getElementById('profile-subtitle').textContent = `Smart Farmer • ${data.location || "India"}`;
+                    document.getElementById('profile-location').textContent = data.location || "Not set";
+                    document.getElementById('profile-crops').textContent = data.crops || "Not set";
+                    document.getElementById('profile-size').textContent = data.farm_size || "Not set";
+                } else {
+                    console.error('Failed to load profile:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('user_name');
+            window.location.href = 'login.html';
+        }
+
+        window.onload = loadProfile;
+    </script>
+</body>
+</html>

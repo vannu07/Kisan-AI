@@ -1,0 +1,10 @@
+flask
+flask-cors
+python-dotenv
+pymongo
+google-generativeai
+PyYAML
+Pillow
+ensure
+python-box
+joblib
