@@ -12,7 +12,8 @@ load_dotenv()
 class MongoDBClient:
     def __init__(self):
         self.use_local = False
-        self.local_db_path = "local_db.json"
+        # Use /tmp in serverless environments
+        self.local_db_path = "/tmp/local_db.json" if os.environ.get('VERCEL') else "local_db.json"
         
         try:
             mongo_url = os.getenv("MONGODB_URL")
