@@ -1,0 +1,16 @@
+name: Greetings
+
+on: [pull_request, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+    - uses: actions/first-interaction@v1.3.0
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: "👋 Thanks for opening your first issue in this repository! Your feedback helps improve the project. Please include as much detail as possible (steps to reproduce, expected vs. actual behavior, and environment details). For more information, see our CONTRIBUTING.md and README.md in the root of the repo."
+        pr-message: "🎉 Thanks for submitting your first pull request to this repository! A maintainer will review it as soon as possible. Please ensure your PR includes a clear description, links to any related issues, and any necessary tests or documentation updates. You can find contribution guidelines in CONTRIBUTING.md and project information in README.md."
