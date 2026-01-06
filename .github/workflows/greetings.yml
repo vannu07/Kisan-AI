@@ -9,7 +9,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-    - uses: actions/first-interaction@v1
+    - uses: actions/first-interaction@v1.3.0
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         issue-message: "👋 Thanks for opening your first issue in this repository! Your feedback helps improve the project. Please include as much detail as possible (steps to reproduce, expected vs. actual behavior, and environment details). For more information, see our CONTRIBUTING.md and README.md in the root of the repo."
