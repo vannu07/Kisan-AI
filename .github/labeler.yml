@@ -23,8 +23,6 @@ documentation:
 # Configuration changes
 configuration:
   - config/**/*
-  - '*.yaml'
-  - '*.yml'
 
 # GitHub workflows
 workflows:
