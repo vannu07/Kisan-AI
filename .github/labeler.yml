@@ -1,0 +1,56 @@
+# Configuration for actions/labeler - https://github.com/actions/labeler
+
+# Documentation changes
+documentation:
+  - changed-files:
+    - any-glob-to-any-file: ['*.md', 'docs/**/*']
+
+# Frontend changes
+frontend:
+  - changed-files:
+    - any-glob-to-any-file: ['frontend/**/*']
+
+# Backend/API changes
+backend:
+  - changed-files:
+    - any-glob-to-any-file: ['api/**/*', 'app.py', 'src/**/*']
+
+# Python source code
+python:
+  - changed-files:
+    - any-glob-to-any-file: ['**/*.py']
+
+# JavaScript changes
+javascript:
+  - changed-files:
+    - any-glob-to-any-file: ['**/*.js']
+
+# HTML/CSS changes
+ui:
+  - changed-files:
+    - any-glob-to-any-file: ['**/*.html', '**/*.css']
+
+# Configuration changes
+config:
+  - changed-files:
+    - any-glob-to-any-file: ['config/**/*', '*.json', '*.yml', '*.yaml', '.env.example']
+
+# CI/CD and workflow changes
+ci-cd:
+  - changed-files:
+    - any-glob-to-any-file: ['.github/**/*', 'vercel.json', '.vercelignore']
+
+# Test changes
+tests:
+  - changed-files:
+    - any-glob-to-any-file: ['tests/**/*', '**/*test*.py']
+
+# Dependencies
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file: ['requirements.txt', 'package.json', 'package-lock.json']
+
+# Machine Learning components
+ml:
+  - changed-files:
+    - any-glob-to-any-file: ['src/components/**/*', 'notebooks/**/*']
