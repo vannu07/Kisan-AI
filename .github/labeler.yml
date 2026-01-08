@@ -4,9 +4,6 @@
 # Frontend changes
 frontend:
   - frontend/**/*
-  - frontend/**/*.html
-  - frontend/**/*.css
-  - frontend/**/*.js
 
 # Backend/API changes
 backend:
@@ -28,8 +25,6 @@ configuration:
   - config/**/*
   - '*.yaml'
   - '*.yml'
-  - requirements.txt
-  - setup.py
 
 # GitHub workflows
 workflows:
