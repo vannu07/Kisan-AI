@@ -1,56 +1,37 @@
-# Configuration for actions/labeler - https://github.com/actions/labeler
-
-# Documentation changes
-documentation:
-  - changed-files:
-    - any-glob-to-any-file: ['*.md', 'docs/**/*']
+# Configuration for actions/labeler
+# Labels PRs based on the paths of files being changed
 
 # Frontend changes
 frontend:
-  - changed-files:
-    - any-glob-to-any-file: ['frontend/**/*']
+  - frontend/**/*
 
 # Backend/API changes
 backend:
-  - changed-files:
-    - any-glob-to-any-file: ['api/**/*', 'app.py', 'src/**/*']
+  - api/**/*
+  - app.py
+  - src/**/*.py
 
-# Python source code
-python:
-  - changed-files:
-    - any-glob-to-any-file: ['**/*.py']
+# Database changes
+database:
+  - src/database/**/*
 
-# JavaScript changes
-javascript:
-  - changed-files:
-    - any-glob-to-any-file: ['**/*.js']
-
-# HTML/CSS changes
-ui:
-  - changed-files:
-    - any-glob-to-any-file: ['**/*.html', '**/*.css']
+# Documentation changes
+documentation:
+  - '**/*.md'
 
 # Configuration changes
-config:
-  - changed-files:
-    - any-glob-to-any-file: ['config/**/*', '*.json', '*.yml', '*.yaml', '.env.example']
+configuration:
+  - config/**/*
 
-# CI/CD and workflow changes
-ci-cd:
-  - changed-files:
-    - any-glob-to-any-file: ['.github/**/*', 'vercel.json', '.vercelignore']
+# GitHub workflows
+workflows:
+  - .github/workflows/**/*
 
-# Test changes
+# Tests
 tests:
-  - changed-files:
-    - any-glob-to-any-file: ['tests/**/*', '**/*test*.py']
+  - tests/**/*
 
 # Dependencies
 dependencies:
-  - changed-files:
-    - any-glob-to-any-file: ['requirements.txt', 'package.json', 'package-lock.json']
-
-# Machine Learning components
-ml:
-  - changed-files:
-    - any-glob-to-any-file: ['src/components/**/*', 'notebooks/**/*']
+  - requirements.txt
+  - setup.py
