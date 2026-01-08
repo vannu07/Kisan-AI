@@ -17,7 +17,7 @@ database:
 
 # Documentation changes
 documentation:
-  - '*.md'
+  - '**/*.md'
   - docs/**/*
 
 # Configuration changes
