@@ -1,0 +1,37 @@
+# Configuration for actions/labeler
+# Labels PRs based on the paths of files being changed
+
+# Frontend changes
+frontend:
+  - frontend/**/*
+
+# Backend/API changes
+backend:
+  - api/**/*
+  - app.py
+  - src/**/*.py
+
+# Database changes
+database:
+  - src/database/**/*
+
+# Documentation changes
+documentation:
+  - '**/*.md'
+
+# Configuration changes
+configuration:
+  - config/**/*
+
+# GitHub workflows
+workflows:
+  - .github/workflows/**/*
+
+# Tests
+tests:
+  - tests/**/*
+
+# Dependencies
+dependencies:
+  - requirements.txt
+  - setup.py
