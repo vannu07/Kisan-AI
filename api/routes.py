@@ -96,7 +96,7 @@ def chat_advisor():
         
     except Exception as e:
         logger.error(f"Error in /chat: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "An internal error occurred while processing your request."}), 500
 
 @api_bp.route('/history', methods=['GET'])
 def get_history():
@@ -166,7 +166,7 @@ def login():
         return jsonify({"success": True, "user_id": str(user['_id']), "name": user.get('name')})
     except Exception as e:
         logger.error(f"Error in /login: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "An internal error occurred while processing your request."}), 500
 
 @api_bp.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -212,4 +212,4 @@ def profile():
             
     except Exception as e:
         logger.error(f"Error in /profile: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "An internal error occurred while processing your request."}), 500
