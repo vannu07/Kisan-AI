@@ -58,4 +58,4 @@ def uploaded_file(filename):
 
 if __name__ == "__main__":
     logger.info("Starting KisanAI Live Application...")
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)
