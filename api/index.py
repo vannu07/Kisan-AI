@@ -82,7 +82,8 @@ def health():
 if __name__ == "__main__":
     # Only for local development
     logger.info("Starting KisanAI Local Development Server...")
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    debug_mode = os.environ.get("FLASK_DEBUG", "").lower() in ("1", "true", "yes")
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
 else:
     # Running as a Vercel serverless function
     logger.info("KisanAI running as Vercel serverless function")
