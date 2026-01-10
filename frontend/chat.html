@@ -105,11 +105,25 @@
             const chatBox = document.getElementById('chat-box');
             const div = document.createElement('div');
             div.className = `message ${sender}`;
-            
-            div.innerHTML = `
-                <p>${text}</p>
-                <span style="font-size: 0.7rem; color: ${sender === 'user' ? 'rgba(255,255,255,0.8)' : '#999'}; display: block; margin-top: 5px; ${sender === 'user' ? 'text-align: right;' : ''}">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-            `;
+
+            // Create message paragraph with text safely inserted
+            const messagePara = document.createElement('p');
+            messagePara.textContent = text;
+
+            // Create timestamp span
+            const timestampSpan = document.createElement('span');
+            timestampSpan.style.fontSize = '0.7rem';
+            timestampSpan.style.color = sender === 'user' ? 'rgba(255,255,255,0.8)' : '#999';
+            timestampSpan.style.display = 'block';
+            timestampSpan.style.marginTop = '5px';
+            if (sender === 'user') {
+                timestampSpan.style.textAlign = 'right';
+            }
+            timestampSpan.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            div.appendChild(messagePara);
+            div.appendChild(timestampSpan);
+
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
