@@ -15,15 +15,30 @@ function showNotification(message, type = 'success') {
     if (type === 'error') icon = 'fa-exclamation-circle';
     if (type === 'info') icon = 'fa-info-circle';
 
-    notification.innerHTML = `
-        <div class="notification-content">
-            <i class="fas ${icon}"></i>
-            <div class="notification-text">
-                <strong>KisanAI Says</strong>
-                <p>${message}</p>
-            </div>
-        </div>
-    `;
+    // Build notification content using DOM APIs to avoid interpreting message as HTML
+    const content = document.createElement('div');
+    content.className = 'notification-content';
+
+    const iconElement = document.createElement('i');
+    iconElement.className = `fas ${icon}`;
+
+    const textContainer = document.createElement('div');
+    textContainer.className = 'notification-text';
+
+    const titleElement = document.createElement('strong');
+    titleElement.textContent = 'KisanAI Says';
+
+    const messageElement = document.createElement('p');
+    // Use textContent so that any special characters in message are not treated as HTML
+    messageElement.textContent = message;
+
+    textContainer.appendChild(titleElement);
+    textContainer.appendChild(messageElement);
+
+    content.appendChild(iconElement);
+    content.appendChild(textContainer);
+
+    notification.appendChild(content);
 
     document.body.appendChild(notification);
 
