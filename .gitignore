@@ -50,3 +50,5 @@ local_db.json
 Thumbs.db
 .vercel
 .env*.local
+
+.env.example
