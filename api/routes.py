@@ -118,7 +118,7 @@ def get_history():
         return jsonify({"success": True, "history": records})
     except Exception as e:
         logger.error(f"Error in /history: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "An internal error occurred while retrieving history."}), 500
 
 @api_bp.route('/auth/signup', methods=['POST'])
 def signup():
