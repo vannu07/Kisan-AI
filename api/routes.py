@@ -41,8 +41,8 @@ def recommend_crop():
         result = pred_pipeline.recommend_crop(data)
         return jsonify({"success": True, "recommendation": result})
     except Exception as e:
-        logger.error(f"Error in /recommend/crop: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        logger.error("Error in /recommend/crop", exc_info=True)
+        return jsonify({"error": "An internal error has occurred. Please try again later."}), 500
 
 @api_bp.route('/recommend/fertilizer', methods=['POST'])
 def recommend_fertilizer():
@@ -52,8 +52,8 @@ def recommend_fertilizer():
         result = pred_pipeline.recommend_fertilizer(data)
         return jsonify({"success": True, "recommendation": result})
     except Exception as e:
-        logger.error(f"Error in /recommend/fertilizer: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        logger.error("Error in /recommend/fertilizer", exc_info=True)
+        return jsonify({"error": "An internal error has occurred. Please try again later."}), 500
 
 @api_bp.route('/scan', methods=['POST'])
 def scan_crop():
@@ -76,8 +76,8 @@ def scan_crop():
         return jsonify({"success": True, "analysis": result})
         
     except Exception as e:
-        logger.error(f"Error in /scan: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        logger.error("Error in /scan", exc_info=True)
+        return jsonify({"error": "An internal error has occurred. Please try again later."}), 500
 
 @api_bp.route('/chat', methods=['POST'])
 def chat_advisor():
