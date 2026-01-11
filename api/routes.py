@@ -146,7 +146,7 @@ def signup():
         return jsonify({"success": True, "user_id": str(user_id), "message": "User created successfully"})
     except Exception as e:
         logger.error(f"Error in /signup: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "An internal error occurred while processing your request."}), 500
 
 @api_bp.route('/auth/login', methods=['POST'])
 def login():
