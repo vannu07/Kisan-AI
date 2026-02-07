@@ -18,10 +18,10 @@ name: Fortify AST Scan
 # Customize trigger events based on your DevSecOps process and/or policy
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "main" ]
+    branches: ["main"]
   schedule:
     - cron: '42 9 * * 6'
   workflow_dispatch:
@@ -51,7 +51,7 @@ jobs:
       # configuration options and available sub-actions.
       - name: Run Fortify Scan
         # Specify Fortify GitHub Action version to run. As per GitHub starter workflow requirements, this example
-        # uses the commit id corresponding to version 1.6.2. It is recommended to check whether any later releases
+        # uses the commit id corresponding to version 1.7.0. It is recommended to check whether any later releases
         # are available at https://github.com/fortify/github-action/releases. Depending on the amount of stability
         # required, you may want to consider using fortify/github-action@v1 instead to use the latest 1.x.y version
         # of this action, allowing your workflows to automatically benefit from any new features and bug fixes.
