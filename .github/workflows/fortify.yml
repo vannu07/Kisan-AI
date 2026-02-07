@@ -33,7 +33,7 @@ jobs:
     permissions:
       actions: read
       contents: read
-      security-events: write
+      security-events: read
       # pull-requests: write     # Required if DO_PR_COMMENT is set to true
 
     steps:
@@ -57,9 +57,9 @@ jobs:
         # of this action, allowing your workflows to automatically benefit from any new features and bug fixes.
         uses: fortify/github-action@ef5539bf4bd9c45c0bd971978f635a69eae55297
         with:
-          sast-scan: true          # Run a SAST scan; if not specified or set to false, no SAST scan will be run
-          debricked-sca-scan: true # For FoD, run an open-source scan as part of the SAST scan (ignored if SAST scan
-                                   # is disabled). For SSC, run a Debricked scan and import results into SSC.
+          sast-scan: true           # Run a SAST scan; if not specified or set to false, no SAST scan will be run
+          debricked-sca-scan: true   # For FoD, run an open-source scan as part of the SAST scan (ignored if SAST scan
+                                     # is disabled). For SSC, run a Debricked scan and import results into SSC.
         env:
           #############################################################
           ##### Fortify on Demand configuration
@@ -68,7 +68,7 @@ jobs:
           FOD_URL: https://ams.fortify.com                 # Must be hardcoded or configured through GitHub variable, not secret
           FOD_TENANT: ${{secrets.FOD_TENANT}}              # Either tenant/user/password or client id/secret are required;
           FOD_USER: ${{secrets.FOD_USER}}                  # these should be configured through GitHub secrets.
-          FOD_PASSWORD: ${{secrets.FOD_PAT}}
+          FOD_PASSWORD: ${{secrets.FOD_PAT}}               # Personal Access Token (PAT) used as password
           # FOD_CLIENT_ID: ${{secrets.FOD_CLIENT_ID}}
           # FOD_CLIENT_SECRET: ${{secrets.FOD_CLIENT_SECRET}}
           ### Optional configuration
